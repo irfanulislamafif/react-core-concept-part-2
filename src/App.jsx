@@ -1,8 +1,25 @@
 import Counter from "./counter";
 import "./App.css";
 import Batsman from "./batsman";
-
+import Users from "./users";
+import { Suspense } from "react";
+import Posts from "./posts";
+import { Friends } from "./friends";
+const fetchUsers = fetch("https://jsonplaceholder.typicode.com/users").then(
+  (res) => res.json()
+);
+const fetchFriends = async () => {
+  const res = await fetch("https://jsonplaceholder.typicode.com/users");
+  return res.json();
+};
+const fetchPosts = async () => {
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  return res.json();
+};
 function App() {
+  const postsPromise = fetchPosts();
+
+  const friendsPromise = fetchFriends();
   function handleClick() {
     alert("Iam clicked");
   }
@@ -17,6 +34,15 @@ function App() {
   return (
     <>
       <h1>Vite + React</h1>
+      <Suspense fallback={<h4>Posts are coming........</h4>}>
+        <Posts postPromise={postsPromise}></Posts>
+      </Suspense>
+      <Suspense fallback={<h3>loading...</h3>}>
+        <Users fetchUsers={fetchUsers}></Users>
+      </Suspense>
+      <Suspense fallback={<h3>Friends are coming for treat...</h3>}>
+        <Friends friendsPromise={friendsPromise}></Friends>
+      </Suspense>
       <Batsman></Batsman>
       <Counter />
 
